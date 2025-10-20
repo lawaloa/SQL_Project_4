@@ -314,10 +314,178 @@ It was a small but satisfying victory in my journey toward becoming a better dat
 ## 📊 The Last Analysis: Finding the Final Insights from Our Data
 ---
 
-Here, we move from exploration to **decision-oriented insights**:
-- Identifying regions most affected by water shortages  
-- Highlighting inefficiencies and corruption among field workers  
-- Prioritizing interventions for equitable resource distribution  
+his part of the project felt different for me — more personal.
+I wasn’t just querying data anymore; I was uncovering stories hidden in the numbers. Every percentage, every row, was a reflection of real people’s lives.
+
+So, I decided to take a closer look — province by province, and then town by town — to understand who had access to clean water and who didn’t.
+
+### 💧 Provincial Overview — Spotting the Big Picture
+---
+
+Before jumping into towns, I wanted to see the broader picture across provinces.
+Here’s the query I wrote to aggregate the data.
+
+<details> 
+<summary>👩‍💻 <b>Click to view my SQL Query</b></summary>
+
+```sql
+WITH province_totals AS ( -- This CTE calculates the population of each province
+    SELECT
+        province_name,
+        SUM(people_served) AS total_ppl_serv
+    FROM
+        combined_analysis_table
+    GROUP BY
+        province_name
+)
+SELECT
+    ct.province_name,
+    ROUND((SUM(CASE WHEN source_type = 'river' THEN people_served ELSE 0 END) * 100.0 / pt.total_ppl_serv), 0) AS river,
+    ROUND((SUM(CASE WHEN source_type = 'shared_tap' THEN people_served ELSE 0 END) * 100.0 / pt.total_ppl_serv), 0) AS shared_tap,
+    ROUND((SUM(CASE WHEN source_type = 'tap_in_home' THEN people_served ELSE 0 END) * 100.0 / pt.total_ppl_serv), 0) AS tap_in_home,
+    ROUND((SUM(CASE WHEN source_type = 'tap_in_home_broken' THEN people_served ELSE 0 END) * 100.0 / pt.total_ppl_serv), 0) AS tap_in_home_broken,
+    ROUND((SUM(CASE WHEN source_type = 'well' THEN people_served ELSE 0 END) * 100.0 / pt.total_ppl_serv), 0) AS well
+FROM
+    combined_analysis_table ct
+JOIN
+    province_totals pt ON ct.province_name = pt.province_name
+GROUP BY
+    ct.province_name
+ORDER BY
+    ct.province_name;
+```
+
+</details> 
+
+<details> 
+<summary>📊 <b>Click to view provincial result table</b></summary>
+
+| Province | River (%) | Shared Tap (%) | Tap in Home (%) | Broken Tap (%) | Well (%) |
+| -------- | --------- | -------------- | --------------- | -------------- | -------- |
+| Sokoto   | 45        | 18             | 25              | 9              | 3        |
+| Amanzi   | 3         | 28             | 48              | 21             | 0        |
+| Akatsi   | 7         | 15             | 30              | 32             | 16       |
+
+</details>
+
+### 📈 Visualizing the Provincial Pattern
+---
+
+Here’s what the data looks like when visualized — clearer, more emotional, and more powerful.
+
+![Population Percentage by Source of Water, per Province](https://github.com/lawaloa/SQL_Project_4/blob/main/Pattern_image.png)
+
+> 🧩 This graph confirmed what I saw in the query — **Sokoto** stands out with a very high percentage of people depending on river water.
+> **Amanzi**, on the other hand, shows a worrying number of broken taps.
+> These patterns helped me prioritize where to send repair teams first.
+
+
+### 🏘 Town-Level Insights — Getting Personal
+---
+
+Next, I zoomed in further. But it wasn’t easy — I realized that some town names repeat (like Harare in both Akatsi and Kilimani).
+So I grouped my data by both province and town, to get the right picture.
+
+<details> 
+<summary>👩‍💻 <b>Click to view my Town Aggregation Query</b></summary>
+
+```sql
+WITH town_totals AS (
+    SELECT 
+        province_name, 
+        town_name, 
+        SUM(people_served) AS total_ppl_serv
+    FROM 
+        combined_analysis_table
+    GROUP BY 
+        province_name, town_name
+)
+SELECT
+    ct.province_name,
+    ct.town_name,
+    ROUND((SUM(CASE WHEN source_type = 'river' THEN people_served ELSE 0 END) * 100.0 / tt.total_ppl_serv), 0) AS river,
+    ROUND((SUM(CASE WHEN source_type = 'shared_tap' THEN people_served ELSE 0 END) * 100.0 / tt.total_ppl_serv), 0) AS shared_tap,
+    ROUND((SUM(CASE WHEN source_type = 'tap_in_home' THEN people_served ELSE 0 END) * 100.0 / tt.total_ppl_serv), 0) AS tap_in_home,
+    ROUND((SUM(CASE WHEN source_type = 'tap_in_home_broken' THEN people_served ELSE 0 END) * 100.0 / tt.total_ppl_serv), 0) AS tap_in_home_broken,
+    ROUND((SUM(CASE WHEN source_type = 'well' THEN people_served ELSE 0 END) * 100.0 / tt.total_ppl_serv), 0) AS well
+FROM
+    combined_analysis_table AS ct
+JOIN
+    town_totals AS tt 
+    ON ct.province_name = tt.province_name 
+    AND ct.town_name = tt.town_name
+GROUP BY
+    ct.province_name, ct.town_name
+ORDER BY
+    ct.town_name;
+```
+
+</details> 
+
+<details>
+<summary>📊 <b>Click to view sample Town Result Table</b></summary>
+
+| Province | Town   | Tap in Home (%) | Broken Tap (%) | Shared Tap (%) | Well (%) | River (%) |
+| -------- | ------ | --------------- | -------------- | -------------- | -------- | --------- |
+| Akatsi   | Harare | 28              | 27             | 17             | 27       | 2         |
+| Amanzi   | Amina  | 3               | 56             | 24             | 9        | 8         |
+| Amanzi   | Dahabu | 55              | 1              | 37             | 4        | 3         |
+
+</details>
+
+While reading through these results, one town stood out — **Amina** in Amanzi.
+Only 3% of its people have running water, yet more than half have taps installed that don’t work.
+
+That hit me.
+I wrote in my notes:
+
+> “If I could deploy one repair team today, I’d send them to Amina first.”
+
+### 🧾 Finding Patterns — Telling Data Stories
+---
+
+I also calculated which towns had the highest share of **broken taps** relative to total installed taps:
+
+<details> 
+<summary>👩‍💻 <b>Click to view Query</b></summary>
+
+```sql
+SELECT
+    province_name,
+    town_name,
+    ROUND(tap_in_home_broken / (tap_in_home_broken + tap_in_home) * 100, 0) AS Pct_broken_taps
+FROM
+    town_aggregated_water_access;
+```
+
+</details> 
+
+<details>
+<summary>📊 <b>Click to view Result Table</b></summary>
+
+| Province | Town     | % Broken Taps |
+| -------- | -------- | ------------- |
+| Amanzi   | Amina    | 95            |
+| Amanzi   | Bello    | 52            |
+| Akatsi   | Kintampo | 46            |
+
+
+</details>
+
+Amina again. Almost all taps broken.
+It was clear now — this wasn’t just data; it was evidence.
+I could visualize the inequality: Dahabu (the capital, where past politicians lived) had perfectly working taps, while surrounding towns struggled to find clean water.
+
+This realization shaped my final summary and recommendations.
+
+### 💭 My Takeaway
+---
+
+This part of the project reminded me why I love data.
+It’s not just about numbers and queries — it’s about using data to *see people, spot injustice, and propose solutions that matter*.
+
+Every `CTE`, every `JOIN`, every percentage — they all told a story.
+And now, I was ready to turn those insights into action.
 
 ---
 
