@@ -303,7 +303,7 @@ WHERE v.visit_count = 1;
 ### 💭 Reflection
 ---
 
-This part of the project reminded me why I love data engineering. It’s not just about writing SQL — it’s about **understanding relationships**, **optimizing queries**, and **making data tell a coherent story**.
+This part of the project reminded me why I love data analysis. It’s not just about writing SQL — it’s about **understanding relationships**, **optimizing queries**, and **making data tell a coherent story**.
 
 Every join felt like connecting the dots in a mystery, and when the final table came together, it finally made sense.
 It was a small but satisfying victory in my journey toward becoming a better data storyteller.
