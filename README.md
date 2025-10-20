@@ -527,7 +527,7 @@ Based on the data, here’s the approach I’d take moving forward:
 ### 🛠️ Practical Solutions  
 
 1. **Rivers:** For communities still depending on rivers, I’d start by sending water trucks as a short-term solution while we drill wells for a permanent fix. **Sokoto** would be my first target.  
-2. **Wells:** I’d install filters — **RO filters** for chemical pollution and **UV filters** for biological contamination. Long-term, I’d investigate the root causes of these pollutants.  
+2. **Wells:** I’d install filters — **RO (Reverse Osmosis) filters** for chemical pollution and **UV filters** for biological contamination. Long-term, I’d investigate the root causes of these pollutants.  
 3. **Shared taps:**  
    - In the short term, send **extra tankers** to the busiest taps on the busiest days (guided by the queue-time data).  
    - In the medium term, **install additional taps** where demand is highest — starting with **Bello**, **Abidjan**, and **Zuri**.  
