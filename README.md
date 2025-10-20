@@ -360,11 +360,11 @@ ORDER BY
 <details> 
 <summary>📊 <b>Click to view provincial result table</b></summary>
 
-| Province | River (%) | Shared Tap (%) | Tap in Home (%) | Broken Tap (%) | Well (%) |
-| -------- | --------- | -------------- | --------------- | -------------- | -------- |
-| Sokoto   | 45        | 18             | 25              | 9              | 3        |
-| Amanzi   | 3         | 28             | 48              | 21             | 0        |
-| Akatsi   | 7         | 15             | 30              | 32             | 16       |
+| province_name | river     | shared_tap  | tap_in_home | tap_in_home_broken | well |
+| ------------- |-----------| ----------- | ----------- | ------------------ | ---- |
+| Sokoto        | 45        | 18          | 25          | 9                  | 3    |
+| Amanzi        | 3         | 28          | 48          | 21                 | 0    |
+| Akatsi        | 7         | 15          | 30          | 32                 | 16   |
 
 </details>
 
@@ -425,11 +425,11 @@ ORDER BY
 <details>
 <summary>📊 <b>Click to view sample Town Result Table</b></summary>
 
-| Province | Town   | Tap in Home (%) | Broken Tap (%) | Shared Tap (%) | Well (%) | River (%) |
-| -------- | ------ | --------------- | -------------- | -------------- | -------- | --------- |
-| Akatsi   | Harare | 28              | 27             | 17             | 27       | 2         |
-| Amanzi   | Amina  | 3               | 56             | 24             | 9        | 8         |
-| Amanzi   | Dahabu | 55              | 1              | 37             | 4        | 3         |
+| province_name | town_name   | tap_in_home | tap_in_home_broken | shared_Tap | well | river |
+| ------------- | ----------- | ----------- | ------------------ | ---------- | ---- | ----- |
+| Akatsi        | Harare      | 28          | 27                 | 17         | 27   | 2     |
+| Amanzi        | Amina       | 3           | 56                 | 24         | 9    | 8     |
+| Amanzi        | Dahabu      | 55          | 1                  | 37         | 4    | 3     |
 
 </details>
 
@@ -463,11 +463,11 @@ FROM
 <details>
 <summary>📊 <b>Click to view Result Table</b></summary>
 
-| Province | Town     | % Broken Taps |
-| -------- | -------- | ------------- |
-| Amanzi   | Amina    | 95            |
-| Amanzi   | Bello    | 52            |
-| Akatsi   | Kintampo | 46            |
+| province_name | town_name  | Pct_broken_taps |
+| ------------- | ---------- | --------------- |
+| Amanzi        | Amina      | 95              |
+| Amanzi        | Bello      | 52              |
+| Akatsi        | Kintampo   | 46              |
 
 
 </details>
@@ -490,15 +490,61 @@ And now, I was ready to turn those insights into action.
 ---
 
 ## 📋 Summary Report: Sharing Our Knowledge with Decision Makers
-The summarized report transforms our data into a narrative that policymakers can understand at a glance.  
-Through tables, charts, and SQL summaries, we highlight:
-- Regions needing urgent attention  
-- Budgetary gaps and material needs  
-- Recommendations for transparency and accountability  
+--- 
+
+### 💡 Insights  
+
+Alright, let’s wrap up what I’ve discovered from this project.  
+A few weeks ago, I dug into the data, and here’s what stood out to me:  
+
+1. Most of **Maji Ndogo’s** water sources are rural.  
+2. About **43% of our people rely on shared taps** — sometimes as many as **2,000 people per tap**.  
+3. Around **31% of households** have water infrastructure at home, but within that group,  
+4. Nearly **45% face non-functional systems** — mostly due to faulty **pipes, pumps, and reservoirs**.  
+   - Towns like **Amina**, rural **Amanzi**, and parts of **Akatsi** and **Hawassa** are among the worst hit.  
+5. About **18% of the population use wells**, but only **28% of those wells are clean** — especially in **Hawassa**, **Kilimani**, and **Akatsi**.  
+6. Water access also comes with long waits — often **over 120 minutes** on average:  
+   - Queues stretch the longest on **Saturdays**.  
+   - They peak in the **mornings and evenings**.  
+   - **Wednesdays and Sundays** tend to be the easiest days to fetch water.  
+
+Seeing all this laid out made me realize just how much everyday life in Maji Ndogo depends on a few key sources — and how much impact a small fix can make.  
+
+---
+
+### 🧩 Plan of Action  
+
+Based on the data, here’s the approach I’d take moving forward:  
+
+1. **Tackle shared taps first** — improving them will help the largest number of people immediately.  
+2. **Clean up wells** — they’re a good source, but contamination is widespread.  
+3. **Repair broken infrastructure** — one fix here can benefit hundreds of homes and reduce queuing elsewhere.  
+4. **Hold off on new home installations (for now)** — focusing resources where they’ll have the biggest impact.  
+5. **Prepare rural teams** — most work will happen outside urban centers, where logistics and access are tougher.  
+
+---
+
+### 🛠️ Practical Solutions  
+
+1. **Rivers:** For communities still depending on rivers, I’d start by sending water trucks as a short-term solution while we drill wells for a permanent fix. **Sokoto** would be my first target.  
+2. **Wells:** I’d install filters — **RO filters** for chemical pollution and **UV filters** for biological contamination. Long-term, I’d investigate the root causes of these pollutants.  
+3. **Shared taps:**  
+   - In the short term, send **extra tankers** to the busiest taps on the busiest days (guided by the queue-time data).  
+   - In the medium term, **install additional taps** where demand is highest — starting with **Bello**, **Abidjan**, and **Zuri**.  
+   - The goal: bring average queue times **below 30 minutes**, following **UN standards**.  
+4. **Low-queue taps:** Taps with short wait times (<30 min) don’t need immediate upgrades — installing home taps here will be a longer-term goal.  
+5. **Broken infrastructure:** Repairing one reservoir or major pipe can restore access for hundreds. I’d prioritize **Amina**, **Lusaka**, **Zuri**, **Djenne**, and the rural parts of **Amanzi**.  
+
+---
+
+I’ve really enjoyed diving deep into this project — it’s been more than just SQL queries and dashboards; it’s about understanding how **data can tell human stories**.  
+Every row and column pointed back to real people waiting in real queues — and that’s what keeps me motivated to keep building, one dataset at a time. 💧📊  
 
 ---
 
 ## 🧭 A Practical Plan: From Analysis to Action
+---
+
 This final stage turns insight into **action** by developing:
 - Job lists for engineers and project managers  
 - Material and budget requirement sheets  
