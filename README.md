@@ -13,14 +13,13 @@
 ## 📑 Table of Contents
 ---
 
-- [Message from President Aziza Naledi](#message-from-president-aziza-naledi)
+- [🗣️ Message from President Aziza Naledi](#message-from-president-aziza-naledi)
 - [🚀 Gearing Up for the Last SQL Project](#-gearing-up-for-the-last-sql-project)
-- [Introduction: Starting the Final Journey](#introduction-starting-the-final-journey)
-- [Joining Pieces Together: Finding the Data We Need Across Tables](#joining-pieces-together-finding-the-data-we-need-across-tables)
-- [The Last Analysis: Finding the Final Insights from Our Data](#the-last-analysis-finding-the-final-insights-from-our-data)
-- [Summary Report: Sharing Our Knowledge with Decision Makers](#summary-report-sharing-our-knowledge-with-decision-makers)
-- [A Practical Plan: From Analysis to Action](#a-practical-plan-from-analysis-to-action)
-- [Final Note](#final-note)
+- [🏁 Introduction: Starting the Final Journey](#introduction-starting-the-final-journey)
+- [🔗 Joining Pieces Together: Finding the Data We Need Across Tables](#joining-pieces-together-finding-the-data-we-need-across-tables)
+- [📊 The Last Analysis: Finding the Final Insights from Our Data](#the-last-analysis-finding-the-final-insights-from-our-data)
+- [📋 Summary Report: Sharing Our Knowledge with Decision Makers](#summary-report-sharing-our-knowledge-with-decision-makers)
+- [🧭 A Practical Plan: From Analysis to Action](#a-practical-plan-from-analysis-to-action)
 
 ---
 
