@@ -611,11 +611,11 @@ At a high level, my improvement logic looks like this:
 1. **Rivers** → Drill wells.
 
 2. **Wells**:
-        - If chemically contaminated → Install **RO filter**.
-        - If biologically contaminated → **Install UV + RO filters**.
+   - If chemically contaminated → Install **RO filter**.
+   - If biologically contaminated → **Install UV + RO filters**.
 
 3. **Shared taps**:
-         - If queue time ≥ 30 minutes → Install **X extra taps**, where `X = FLOOR(time_in_queue / 30)`.
+   - If queue time ≥ 30 minutes → Install **X extra taps**, where `X = FLOOR(time_in_queue / 30)`.
 
 4. **In-home taps (broken)**: Diagnose local infrastructure.
 
