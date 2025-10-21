@@ -19,6 +19,7 @@
 - [📊 The Last Analysis: Finding the Final Insights from Our Data](#-the-last-analysis-finding-the-final-insights-from-our-data)
 - [📋 Summary Report: Sharing Our Knowledge with Decision Makers](#-summary-report-sharing-our-knowledge-with-decision-makers)
 - [🧭 A Practical Plan: From Analysis to Action](#-a-practical-plan-from-analysis-to-action)
+- [📑 Reference](#-reference)
 
 ---
 
@@ -601,6 +602,10 @@ Once the structure is ready, I moved on to design the query that actually fills 
 ### 🧠 My Thought Process
 ---
 
+The diagram below illustrates the logical flow of my query construction and data-filtering steps:
+  
+![](https://github.com/lawaloa/SQL_Project_4/blob/main/Flow_chart.png)
+
 At a high level, my improvement logic looks like this:
 
 1. **Rivers** → Drill wells.
@@ -793,14 +798,17 @@ But looking back, I can honestly say I’ve learned how to **think in SQL**, not
 
 ---
 
-## 📑 Reference
+## 📑 Reference  
 ---
 
-- 📚 ALX Data Programs: Querying Data: Integrated Project 4 – Maji Ndogo: Charting the Course for Maji Ndogo’s Water Future.
+- 📚 **ALX Data Program:** *Querying Data: Integrated Project 4 – Maji Ndogo: Charting the Course for Maji Ndogo’s Water Future.*  
 
-- Dataset: Maji Ndogo Water Services – a fictional but realistic dataset designed for SQL practice, data cleaning, and exploratory analysis.
+- 🗂️ **Dataset:** *Maji Ndogo Water Services* – a fictional yet realistic dataset designed for SQL practice, data cleaning, and exploratory analysis.  
 
-- Author’s Contribution: very SQL query, cleaning step, and analytical insight presented here was personally executed and refined by **me**, as part of the **ALX Data Program** capstone project.
+- ✍️ **Author’s Contribution:** Every SQL query, data-cleaning step, and analytical insight presented here was personally executed and refined by **me**, as part of the **ALX Data Program** capstone project.  
+
+- 🖼️ **Image Credits:** All images and visual assets used in this documentation are courtesy of the **ALX Data Program**.
+
 
 
 ## 💾 Repository Info
