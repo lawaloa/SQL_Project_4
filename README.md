@@ -53,6 +53,18 @@ It’s been quite a journey working on the Maji Ndogo Water Crisis analysis. As 
 >
 > This project has reminded me why I’m passionate about data storytelling — transforming raw numbers into meaningful insights that can shape real-world outcomes.
 
+> ## ✅ Skills Applied  
+>  
+> - **SQL Mastery**: Joins · Aggregations · Filtering · Conditional logic · Case statements  
+> - **Data Cleaning & Validation**: Detecting inconsistencies · Ensuring data integrity · Handling nulls and duplicates  
+> - **Exploratory Data Analysis (EDA)**: Exploring provincial water patterns · Investigating queue times · Spotting contamination trends  
+> - **Analytical Thinking**: Building stepwise queries · Simplifying logic with CTEs · Iterative testing for accuracy  
+> - **Data Storytelling**: Turning query outputs into actionable insights · Communicating findings through visuals and reports  
+> - **Problem-Solving**: Debugging queries · Structuring efficient logic · Balancing readability and scalability  
+> - **Transparency & Accountability Focus**: Applying data to drive equitable water access · Supporting governance with evidence-based insights  
+>
+> _These skills were applied throughout the Maji Ndogo Water Access project to identify improvement priorities and guide data-driven decision-making._
+
 ---
 
 ## 🔗 Joining Pieces Together: Finding the Data We Need Across Tables
@@ -527,7 +539,7 @@ Based on the data, here’s the approach I’d take moving forward:
 ### 🛠️ Practical Solutions  
 
 1. **Rivers:** For communities still depending on rivers, I’d start by sending water trucks as a short-term solution while we drill wells for a permanent fix. **Sokoto** would be my first target.  
-2. **Wells:** I’d install filters — **RO (Reverse Osmosis) filters** for chemical pollution and **UV filters** for biological contamination. Long-term, I’d investigate the root causes of these pollutants.  
+2. **Wells:** I’d install filters — **RO (Reverse Osmosis) filters** for chemical pollution and **Ultra Violent (UV) filters** for biological contamination. Long-term, I’d investigate the root causes of these pollutants.  
 3. **Shared taps:**  
    - In the short term, send **extra tankers** to the busiest taps on the busiest days (guided by the queue-time data).  
    - In the medium term, **install additional taps** where demand is highest — starting with **Bello**, **Abidjan**, and **Zuri**.  
@@ -545,16 +557,254 @@ Every row and column pointed back to real people waiting in real queues — and 
 ## 🧭 A Practical Plan: From Analysis to Action
 ---
 
-This final stage turns insight into **action** by developing:
-- Job lists for engineers and project managers  
-- Material and budget requirement sheets  
-- Strategic plans for long-term water sustainability  
+Now that I’ve wrapped up my analysis, it’s time to **put the plan into action** — right inside the database.
+
+I’ve come a long way with this project, and this part feels like the most meaningful one.  
+It’s where all the insights, numbers, and logic finally become **real, trackable steps** that can help our engineers improve water access across **Maji Ndogo**.  
+
+The goal is simple:  
+I want to build a table that gives our field teams everything they need — **where to go, what to fix, and how to report back**.  
+
+They’ll need:
+- The **address** of each location (street, town, province).  
+- The **type of water source**.  
+- The **specific action** needed (repair, upgrade, or replacement).  
+- Space to **update progress** and record **completion dates**.  
+
+So, I created a table called **`Project_progress`**.  
 
 ---
 
+<details>
+<summary>🧱 <b>Click to view the CREATE TABLE query</b></summary>
+
+```sql
+CREATE TABLE Project_progress (
+    Project_id SERIAL PRIMARY KEY,
+    source_id VARCHAR(20) NOT NULL REFERENCES water_source(source_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    Address VARCHAR(50),
+    Town VARCHAR(30),
+    Province VARCHAR(30),
+    Source_type VARCHAR(50),
+    Improvement VARCHAR(50),
+    Source_status VARCHAR(50) DEFAULT 'Backlog' CHECK (Source_status IN ('Backlog', 'In progress', 'Complete')),
+    Date_of_completion DATE,
+    Comments TEXT
+);
+```
+
+</details> 
+
+Once the structure is ready, I moved on to design the query that actually fills this table — using everything I’ve learned so far.
 
 
-### 💾 Repository Info
+### 🧠 My Thought Process
+---
+
+At a high level, my improvement logic looks like this:
+
+1. **Rivers** → Drill wells.
+
+2. **Wells**:
+- If chemically contaminated → Install **RO filter**.
+- If biologically contaminated → **Install UV + RO filters**.
+
+3. **Shared taps**:
+- If queue time ≥ 30 minutes → Install **X extra taps**, where `X = FLOOR(time_in_queue / 30)`.
+
+24. **In-home taps (broken)**: Diagnose local infrastructure.
+
+The logic felt like a perfect use case for `CASE statements` — my favourite SQL control flow tool.
+
+### 🧩 Combining the Data
+---
+
+To make this work, I joined together the `water_source`, `well_pollution`, `visits`, and `location` tables.
+Then I filtered out any data that wasn’t relevant — keeping only the first visit to each site and the sources that actually need improvement.
+
+Here’s the initial query logic:
+
+<details> 
+<summary>🪄 <b>Click to view the filtering query</b></summary>
+
+```sql
+
+SELECT
+    l.address,
+    l.town_name,
+    l.province_name,
+    s.source_id,
+    s.type_of_water_source,
+    w.results
+FROM
+    water_source AS s
+LEFT JOIN
+    well_pollution AS w ON s.source_id = w.source_id
+INNER JOIN
+    visits AS v ON s.source_id = v.source_id
+INNER JOIN
+    location AS l ON l.location_id = v.location_id
+WHERE
+    v.visit_count = 1
+    AND (
+        w.results != 'Clean'
+        OR s.type_of_water_source IN ('tap_in_home_broken', 'river')
+        OR (s.type_of_water_source = 'shared_tap' AND v.time_in_queue > 30)
+    );
+```
+
+</details>
+
+### 🧩 Final Query
+---
+
+After layering in all the logic with `CASE` statements, here’s the final query that generates the data for `Project_progress`.
+
+<details> 
+<summary>📊 <b>Click to view the final query</b></summary>
+
+```sql
+SELECT
+    s.source_id,
+    l.address,
+    l.town_name,
+    l.province_name,
+    s.type_of_water_source AS source_type,
+
+    CASE
+        WHEN w.results = 'Contaminated: Chemical' THEN 'Install RO filter'
+        WHEN w.results = 'Contaminated: Biological' THEN 'Install UV filter'
+        WHEN s.type_of_water_source = 'river' THEN 'Drill well'
+        WHEN s.type_of_water_source = 'shared_tap' AND v.time_in_queue > 30
+            THEN CONCAT('Install ', FLOOR(v.time_in_queue / 30), ' taps nearby')
+        WHEN s.type_of_water_source = 'tap_in_home_broken' THEN 'Diagnose local infrastructure'
+        ELSE NULL
+    END AS Improvement,
+
+    CASE
+        WHEN w.results IN ('Contaminated: Chemical', 'Contaminated: Biological')
+            OR s.type_of_water_source = 'river'
+            OR (s.type_of_water_source = 'shared_tap' AND v.time_in_queue > 30)
+            OR s.type_of_water_source = 'tap_in_home_broken'
+        THEN 'In progress'
+        ELSE 'Backlog'
+    END AS Source_status,
+
+    NULL AS Date_of_completion,
+    NULL AS Comments
+
+FROM
+    water_source AS s
+LEFT JOIN
+    well_pollution AS w ON s.source_id = w.source_id
+INNER JOIN
+    visits AS v ON s.source_id = v.source_id
+INNER JOIN
+    location AS l ON l.location_id = v.location_id
+
+WHERE
+    v.visit_count = 1
+    AND (
+        w.results != 'Clean'
+        OR s.type_of_water_source IN ('tap_in_home_broken', 'river')
+        OR (s.type_of_water_source = 'shared_tap' AND v.time_in_queue > 30)
+    );
+```
+
+</details>
+
+### 📥 Inserting the Results into the Table
+---
+
+After verifying the query results (about **25,398 rows**), I inserted them directly into the new table.
+
+<details> 
+<summary>🗂️ <b>Click to view the INSERT query</b></summary>
+
+```sql
+INSERT INTO Project_progress (
+    source_id,
+    Address,
+    Town,
+    Province,
+    Source_type,
+    Improvement,
+    Source_status,
+    Date_of_completion,
+    Comments
+)
+SELECT
+    s.source_id,
+    l.address,
+    l.town_name,
+    l.province_name,
+    s.type_of_water_source AS source_type,
+
+    CASE
+        WHEN w.results = 'Contaminated: Chemical' THEN 'Install RO filter'
+        WHEN w.results = 'Contaminated: Biological' THEN 'Install UV filter'
+        WHEN s.type_of_water_source = 'river' THEN 'Drill well'
+        WHEN s.type_of_water_source = 'shared_tap' AND v.time_in_queue > 30
+            THEN CONCAT('Install ', FLOOR(v.time_in_queue / 30), ' taps nearby')
+        WHEN s.type_of_water_source = 'tap_in_home_broken' THEN 'Diagnose local infrastructure'
+        ELSE NULL
+    END AS Improvement,
+
+    CASE
+        WHEN w.results IN ('Contaminated: Chemical', 'Contaminated: Biological')
+            OR s.type_of_water_source = 'river'
+            OR (s.type_of_water_source = 'shared_tap' AND v.time_in_queue > 30)
+            OR s.type_of_water_source = 'tap_in_home_broken'
+        THEN 'In progress'
+        ELSE 'Backlog'
+    END AS Source_status,
+
+    NULL AS Date_of_completion,
+    NULL AS Comments
+
+FROM
+    water_source AS s
+LEFT JOIN
+    well_pollution AS w ON s.source_id = w.source_id
+INNER JOIN
+    visits AS v ON s.source_id = v.source_id
+INNER JOIN
+    location AS l ON l.location_id = v.location_id
+
+WHERE
+    v.visit_count = 1
+    AND (
+        w.results != 'Clean'
+        OR s.type_of_water_source IN ('tap_in_home_broken', 'river')
+        OR (s.type_of_water_source = 'shared_tap' AND v.time_in_queue > 30)
+    );
+```
+
+</details>
+
+### 🪶 Wrapping Up
+---
+
+And that’s it — my `Project_progress` table is ready to guide the repair teams!
+It will let us track repairs, upgrades, and completions — and give President Naledi a clear picture of progress as it happens.
+
+This was a long journey — from **joins** to **window** functions, and even a few debugging marathons.
+But looking back, I can honestly say I’ve learned how to **think in SQL**, not just write it.
+
+---
+
+## 📑 Reference
+---
+
+- 📚 ALX Data Programs: Querying Data: Integrated Project 4 – Maji Ndogo: Charting the Course for Maji Ndogo’s Water Future.
+
+- Dataset: Maji Ndogo Water Services – a fictional but realistic dataset designed for SQL practice, data cleaning, and exploratory analysis.
+
+- Author’s Contribution: very SQL query, cleaning step, and analytical insight presented here was personally executed and refined by **me**, as part of the **ALX Data Program** capstone project.
+
+
+## 💾 Repository Info
+
 If you found this project insightful, feel free to ⭐ the repo and connect with me on [LinkedIn](https://www.linkedin.com/in/omotola-lawal-541b9b131) for collaboration.
 
 ---
